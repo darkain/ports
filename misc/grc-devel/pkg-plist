@@ -47,7 +47,6 @@ man/man1/grcat.1.gz
 %%DATADIR%%/conf.lsof
 %%DATADIR%%/conf.lspci
 %%DATADIR%%/conf.mount
-%%DATADIR%%/conf.mount.old
 %%DATADIR%%/conf.mtr
 %%DATADIR%%/conf.mvn
 %%DATADIR%%/conf.netstat
