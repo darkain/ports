@@ -18,7 +18,7 @@ ONLY_FOR_ARCHS=		amd64 i386 aarch64
 LIB_DEPENDS=		libmspack.so:archivers/libmspack \
 			libdnet.so:net/libdnet
 
-RELEASE_VER=		11.1.5.2
+RELEASE_VER=		11.1.5.3
 BUILD_VER=		16724464
 
 OPTIONS_DEFINE=		DOCS LIBNOTIFY OPENSSL X11
