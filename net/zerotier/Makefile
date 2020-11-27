@@ -23,8 +23,8 @@ USE_RC_SUBR=	zerotier
 
 USE_GITHUB=	yes
 GH_PROJECT= ZeroTierOne
-GH_ACCOUNT=	zerotier
-GH_TAGNAME= 95da2bc
+GH_ACCOUNT=	darkain
+GH_TAGNAME= a624dfd
 
 CFLAGS+=	-flax-vector-conversions
 
