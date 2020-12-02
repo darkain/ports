@@ -2,7 +2,7 @@
 # $FreeBSD$
 
 PORTNAME=	zerotier
-#PORTVERSION=	1.5.0.2
+PORTVERSION=	1.6.2
 DISTVERSIONPREFIX=
 CATEGORIES=	net
 
@@ -23,8 +23,8 @@ USE_RC_SUBR=	zerotier
 
 USE_GITHUB=	yes
 GH_PROJECT= ZeroTierOne
-GH_ACCOUNT=	darkain
-GH_TAGNAME= a624dfd
+GH_ACCOUNT=	zerotier
+#GH_TAGNAME= a624dfd
 
 CFLAGS+=	-flax-vector-conversions
 
