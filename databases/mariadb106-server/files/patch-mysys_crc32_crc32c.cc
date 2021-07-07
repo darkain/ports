@@ -1,6 +1,6 @@
---- mysys/crc32/crc32c.cc.orig	2020-12-06 15:58:40 UTC
+--- mysys/crc32/crc32c.cc.orig	2021-07-05 10:15:49 UTC
 +++ mysys/crc32/crc32c.cc
-@@ -475,6 +475,21 @@ static int arch_ppc_probe(void) {
+@@ -528,6 +528,21 @@ static int arch_ppc_probe(void) {
  
    return arch_ppc_crc32;
  }
@@ -20,5 +20,5 @@
 +  return arch_ppc_crc32;
 +}
  #endif  // __linux__
+ #endif
  
- static bool isAltiVec() {
