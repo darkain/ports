@@ -5,7 +5,7 @@
  #endif
  
 +#ifndef ulong
-+#define ulong unsigned long
++typedef unsigned long ulong;
 +#endif
  
  #define MY_CS_NAME_SIZE			32
