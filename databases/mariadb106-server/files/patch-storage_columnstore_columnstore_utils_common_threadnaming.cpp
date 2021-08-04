@@ -1,29 +1,24 @@
---- storage/columnstore/columnstore/utils/common/threadnaming.cpp.orig	2021-07-07 21:29:57 UTC
+--- storage/columnstore/columnstore/utils/common/threadnaming.cpp.orig	2021-08-04 18:07:21 UTC
 +++ storage/columnstore/columnstore/utils/common/threadnaming.cpp
-@@ -15,12 +15,26 @@
-    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
-    MA 02110-1301, USA. */
- 
-+#ifdef __linux__
- #include <sys/prctl.h>
-+#endif
- 
-+#ifdef __FreeBSD__
-+#include <sys/types.h>
-+#include <unistd.h>
-+#endif
-+
-+
- namespace utils
+@@ -22,13 +22,21 @@ namespace utils
  {
      void setThreadName(const char *threadName)
      {
-+#ifdef __linux__
++#ifdef __FreeBSD__
++        pthread_set_name_np(pthread_self(), threadName);
++#else
          prctl(PR_SET_NAME, threadName, 0, 0, 0);
 +#endif
-+
+     }
+ 
+     std::string getThreadName()
+     {
+       char buf[32];
 +#ifdef __FreeBSD__
-+        setproctitle("%s", threadName);
++      pthread_get_name_np(pthread_self(), buf, sizeof(buf));
++#else
+       prctl(PR_GET_NAME, buf, 0, 0, 0);
 +#endif
+       return std::string(buf);
      }
  } // end of namespace

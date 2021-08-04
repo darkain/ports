@@ -1,12 +1,13 @@
---- include/m_ctype.h.orig	2021-07-07 21:19:03 UTC
+--- include/m_ctype.h.orig	2021-08-04 18:00:35 UTC
 +++ include/m_ctype.h
-@@ -34,6 +34,9 @@ enum loglevel {
- extern "C" {
- #endif
+@@ -43,6 +43,10 @@ extern "C" {
+ 
+ #define CHARSET_DIR	"charsets/"
  
 +#ifndef ulong
 +typedef unsigned long ulong;
 +#endif
++
+ #define my_wc_t ulong
  
- #define MY_CS_NAME_SIZE			32
- #define MY_CS_CTYPE_TABLE_SIZE		257
+ #define MY_CS_REPLACEMENT_CHARACTER 0xFFFD

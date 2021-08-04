@@ -1,6 +1,6 @@
---- mysys/crc32/crc32c.cc.orig	2021-07-05 10:15:49 UTC
+--- mysys/crc32/crc32c.cc.orig	2021-08-04 18:00:35 UTC
 +++ mysys/crc32/crc32c.cc
-@@ -528,6 +528,21 @@ static int arch_ppc_probe(void) {
+@@ -543,6 +543,21 @@ static int arch_ppc_probe(void) {
  
    return arch_ppc_crc32;
  }
