@@ -1,13 +1,6 @@
---- modules/freebsd/vmmemctl/Makefile.orig	2021-01-13 22:58:07 UTC
+--- modules/freebsd/vmmemctl/Makefile.orig	2020-10-16 23:15:58 UTC
 +++ modules/freebsd/vmmemctl/Makefile
-@@ -28,13 +28,13 @@ SRCS	+= kernelStubsBSD.c
- 
- .if $(MACHINE_ARCH) == "amd64"
- SRCS    += backdoorGcc64.c
-+.elif $(MACHINE_ARCH) == "aarch64"
-+SRCS    += backdoorGcc64_arm64.c
- .else
- SRCS    += backdoorGcc32.c
+@@ -33,8 +33,6 @@ SRCS    += backdoorGcc32.c
  .endif
  KMOD	= vmmemctl
  PROG    = ../$(KMOD).ko

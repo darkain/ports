@@ -12,7 +12,7 @@ COMMENT=	Open VMware tools for FreeBSD VMware guests ${${FLAVOR}_COMMENT}
 LICENSE=	LGPL21
 LICENSE_FILE=	${WRKSRC}/COPYING
 
-ONLY_FOR_ARCHS=	amd64 i386 aarch64
+ONLY_FOR_ARCHS=	amd64 i386
 
 LIB_DEPENDS=	libdnet.so:net/libdnet \
 		libmspack.so:archivers/libmspack
