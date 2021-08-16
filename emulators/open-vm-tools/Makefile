@@ -1,9 +1,8 @@
 # Created by: mbr@FreeBSD.org
 
 PORTNAME=	open-vm-tools
-PORTVERSION=	11.2.5
+PORTVERSION=	11.3.0
 DISTVERSIONPREFIX=	stable-
-PORTEPOCH=	2
 CATEGORIES=	emulators
 
 MAINTAINER=	garga@FreeBSD.org
@@ -12,7 +11,7 @@ COMMENT=	Open VMware tools for FreeBSD VMware guests ${${FLAVOR}_COMMENT}
 LICENSE=	LGPL21
 LICENSE_FILE=	${WRKSRC}/COPYING
 
-ONLY_FOR_ARCHS=	amd64 i386
+ONLY_FOR_ARCHS=	amd64 i386 aarch64
 
 LIB_DEPENDS=	libdnet.so:net/libdnet \
 		libmspack.so:archivers/libmspack
