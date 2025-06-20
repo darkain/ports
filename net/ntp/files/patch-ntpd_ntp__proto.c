@@ -4,7 +4,7 @@
  	 * Currently this kiss code will accept whatever valid poll
  	 * rate that the server sends
  	 */
-+#if 0 // FIX FOR https://bugs.ntp.org/show_bug.cgi?id=3877
++/*
  	if (   (NTP_MINPOLL > pkt->ppoll)
  	    || (NTP_MAXPOLL < pkt->ppoll)
  	   ) {
@@ -14,7 +14,7 @@
 -		return;			/* invalid packet poll */
 +		return;			/ * invalid packet poll * /
  	}
-+#endif // FIX FOR 3877
++*/
  	peer->ppoll = max(peer->minpoll, pkt->ppoll);
  	if (kissCode == RATEKISS) {
  		peer->selbroken++;	/* Increment the KoD count */
