@@ -1,0 +1,4 @@
+Copyparty is a lightweight, portable, single-file web server written in Python
+that allows you to easily share and manage files using any web browser. It is
+designed for simplicity, requiring minimal to no configuration to get a file
+server up and running in seconds.

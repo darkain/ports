@@ -1,0 +1,50 @@
+#!/bin/sh
+#
+# PROVIDE: copyparty
+# REQUIRE: NETWORKING
+# KEYWORD:
+
+. /etc/rc.subr
+
+name="copyparty"
+rcvar="copyparty_enable"
+
+load_rc_config $name
+
+: ${copyparty_enable:="NO"}
+: ${copyparty_user:="copyparty"}
+: ${copyparty_group:="copyparty"}
+: ${copyparty_config:="%%PREFIX%%/etc/${name}.conf"}
+: ${copyparty_log:="/var/log/${name}/${name}.log"}
+
+
+command_interpreter="%%PYTHON_CMD%%"
+procname="${command_interpreter}"
+
+
+copyparty_script="%%PREFIX%%/bin/copyparty-sfx.py"
+
+pidfile="/var/run/${name}/${name}.pid"
+
+command="/usr/sbin/daemon"
+command_args="-f -p ${pidfile} -- ${command_interpreter} ${copyparty_script} -c ${copyparty_config} -lo ${copyparty_log}"
+
+copyparty_user=${copyparty_user}
+copyparty_group=${copyparty_group}
+
+start_precmd="copyparty_prestart"
+
+copyparty_prestart()
+{
+	# Create PID directory
+	if [ ! -d "/var/run/${name}" ]; then
+		install -d -o ${copyparty_user} -g ${copyparty_group} -m 750 "/var/run/${name}"
+	fi
+
+	# Create Log directory
+	if [ ! -d "/var/log/${name}" ]; then
+		install -d -o ${copyparty_user} -g ${copyparty_group} -m 750 "/var/log/${name}"
+	fi
+}
+
+run_rc_command "$1"

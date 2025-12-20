@@ -1,0 +1,31 @@
+[global]
+# Listen on a specific port (e.g., 3923)
+p: 3923
+
+# Enable file indexing and filesystem scanning
+e2dsa
+
+# Enable multimedia indexing (for music search, etc.)
+e2ts
+
+# Enable Zeroconf (z) and QR code (qr) generation for easy access
+z, qr
+
+# You can use command-line flags here as well, separated by commas
+
+[accounts]
+# Define user accounts with username: password
+# CHANGE THESE TO SECURE VALUES
+admin: admin
+guest: guest
+
+
+# The web root, sharing the /storage on the filesystem
+# as the / (root) inside of copyparty
+# read-only access for everyone
+# read-write access for "admin"
+[/]
+    /storage
+    accs:
+        r: *
+        rwmd: admin

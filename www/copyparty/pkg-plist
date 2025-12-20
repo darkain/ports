@@ -1,0 +1,11 @@
+bin/copyparty-sfx.py
+@sample etc/copyparty.conf.sample
+@owner copyparty
+@group copyparty
+@mode 750
+@dir /var/db/copyparty
+@dir /var/log/copyparty
+@dir /var/run/copyparty
+@mode
+@owner
+@group
