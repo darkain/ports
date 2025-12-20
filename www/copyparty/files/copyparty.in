@@ -17,17 +17,14 @@ load_rc_config $name
 : ${copyparty_config:="%%PREFIX%%/etc/${name}.conf"}
 : ${copyparty_log:="/var/log/${name}/${name}.log"}
 
-
-command_interpreter="%%PYTHON_CMD%%"
-procname="${command_interpreter}"
-
+procname="%%PYTHON_CMD%%"
 
 copyparty_script="%%PREFIX%%/bin/copyparty-sfx.py"
 
 pidfile="/var/run/${name}/${name}.pid"
 
 command="/usr/sbin/daemon"
-command_args="-f -p ${pidfile} -- ${command_interpreter} ${copyparty_script} -c ${copyparty_config} -lo ${copyparty_log}"
+command_args="-f -p ${pidfile} -- ${procname} ${copyparty_script} -c ${copyparty_config} -lo ${copyparty_log}"
 
 copyparty_user=${copyparty_user}
 copyparty_group=${copyparty_group}
