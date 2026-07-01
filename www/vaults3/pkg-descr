@@ -1,0 +1,9 @@
+VaultS3 is a lightweight, single-binary S3-compatible object storage server
+with less than 80 MB RAM footprint and a built-in web dashboard.
+
+It supports Raft clustering for high availability, per-bucket encryption with
+SSE-C, object versioning and retention, event notifications to NATS/RabbitMQ/
+Kafka/SQS, LDAP authentication, and FUSE mounting -- all in one process.
+
+A companion CLI (vaults3-cli) is included for managing buckets and objects
+from the command line.
