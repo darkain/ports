@@ -22,7 +22,6 @@ RUN_DEPENDS=	go>0:lang/go
 USE_RC_SUBR=	${PORTNAME}
 
 PLIST_FILES=	bin/${PORTNAME} bin/${PORTNAME}-cli
-PLIST_DIRS=	var/db/${PORTNAME}
 
 USERS=			vaults3
 GROUPS=			vaults3
@@ -37,8 +36,5 @@ do-install:
 	${STAGE_WRAPPER}mkdir -p ${STAGEDIR}${PREFIX}/bin
 	${INSTALL_PROGRAM} ${WRKSRC}/vaults3 ${STAGEDIR}${PREFIX}/bin/vaults3
 	${INSTALL_PROGRAM} ${WRKSRC}/vaults3-cli ${STAGEDIR}${PREFIX}/bin/vaults3-cli
-
-post-install:
-	@${MKDIR} ${STAGEDIR}/var/db/${PORTNAME}
 
 .include <bsd.port.mk>
