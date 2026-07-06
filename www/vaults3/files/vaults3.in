@@ -1,26 +1,14 @@
 #!/bin/sh
 #
 # PROVIDE: vaults3
-# REQUIRE: SERVERS DAEMONING LOGIN
-# BEFORE:    daemon
+# REQUIRE: SERVERS DAEMON LOGIN
+# BEFORE:    securelevel
 # KEYWORD:   shutdown
-#
-# Add the following lines to /etc/rc.conf.local or /etc/rc.conf
-# to enable this service:
-#
-# vaults3_enable (bool):	Set to NO by default. Set it to YES to enable it.
-# vaults3_datadir:	Directory where VaultS3 stores data. Default: /var/db/vaults3
-# vaults3_configfile:	Path to VaultS3 config file. Default: /usr/local/etc/vaults3.yaml
-# vaults3_user:		User to run as. Default: ${DAEMON_USER}
-# vaults3_group:	Group to run as. Default: ${DAEMON_GROUP}
 
 . /etc/rc.subr
 
 name="vaults3"
 rcvar="vaults3_enable"
-
-start_cmd="${name}_start"
-stop_cmd="/bin/true"
 
 : ${vaults3_enable="NO"}
 : ${vaults3_datadir="/var/db/vaults3"}
@@ -29,40 +17,32 @@ stop_cmd="/bin/true"
 : ${vaults3_group="vaults3"}
 
 command="/usr/local/bin/${name}"
-procname="/usr/local/bin/${name}"
 pidfile="/var/run/${name}/${name}.pid"
 
-load_rc_config "${name}"
+# Assign explicit custom lifecycle actions
+start_precmd="${name}_prestart"
+start_cmd="${name}_start"
 
-prestart() {
-	if [ ! -d "/var/db/${name}" ]; then
-		mkdir -p "/var/db/${name}"
-		chown ${vaults3_user}:${vaults3_group} "/var/db/${name}"
-	fi
-	if [ ! -d "/var/run/${name}" ]; then
-		mkdir -p "/var/run/${name}"
-		chown root:wheel "/var/run/${name}"
-	fi
+vaults3_prestart() {
+    if [ ! -d "${vaults3_datadir}" ]; then
+        mkdir -p "${vaults3_datadir}"
+    fi
+    chown -R ${vaults3_user}:${vaults3_group} "${vaults3_datadir}"
 
-	if [ ! -f "${vaults3_configfile}" ]; then
-		echo "WARNING: Config file ${vaults3_configfile} does not exist." >&2
-	fi
+    if [ ! -d "/var/run/${name}" ]; then
+        mkdir -p "/var/run/${name}"
+    fi
+    chown ${vaults3_user}:${vaults3_group} "/var/run/${name}"
 }
 
-start() {
-	echo "Starting ${name}..." >&2
-	eval "export VAULTS3_DATADIR=${vaults3_datadir}; \
-	      export VAULTS3_CONFIGFILE=${vaults3_configfile}; \
-	      su -m ${vaults3_user} -c '${command} --data-dir ${vaults3_datadir} --config-file ${vaults3_configfile}'" &
-	sleep 1
+vaults3_start() {
+    echo "Starting ${name}..."
 
-	if [ $? -ne 0 ]; then
-		echo "Failed to start ${name}" >&2
-		return 1
-	fi
+    touch "/var/log/${name}.log"
+    chown "${vaults3_user}:${vaults3_group}" "/var/log/${name}.log"
 
-	echo "${name} started." >&2
-	return 0
+    cd "${vaults3_datadir}" && \
+    su -m "${vaults3_user}" -c "/usr/sbin/daemon -p ${pidfile} -o /var/log/${name}.log -f ${command} --config ${vaults3_configfile}"
 }
 
 run_rc_command "$1"
