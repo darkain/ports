@@ -1,0 +1,3 @@
+bin/vaults3
+bin/vaults3-cli
+@sample etc/vaults3/vaults3.yaml=etc/vaults3/vaults3.yaml.sample

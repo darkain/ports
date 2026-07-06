@@ -21,8 +21,6 @@ RUN_DEPENDS=	go>0:lang/go
 
 USE_RC_SUBR=	${PORTNAME}
 
-PLIST_FILES=	bin/${PORTNAME} bin/${PORTNAME}-cli
-
 USERS=			vaults3
 GROUPS=			vaults3
 UID_FILES=		${FILESDIR}/vaults3-users
@@ -33,7 +31,8 @@ do-build:
 	cd ${WRKSRC} && ${GMAKE} build
 
 do-install:
-	${STAGE_WRAPPER}mkdir -p ${STAGEDIR}${PREFIX}/bin
+	${STAGE_WRAPPER}mkdir -p ${STAGEDIR}${PREFIX}/bin \
+	    ${STAGEDIR}${SYSCONFDIR}/${PORTNAME}
 	${INSTALL_PROGRAM} ${WRKSRC}/vaults3 ${STAGEDIR}${PREFIX}/bin/vaults3
 	${INSTALL_PROGRAM} ${WRKSRC}/vaults3-cli ${STAGEDIR}${PREFIX}/bin/vaults3-cli
 

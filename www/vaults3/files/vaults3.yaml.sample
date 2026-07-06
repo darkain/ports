@@ -1,0 +1,237 @@
+server:
+  address: "0.0.0.0"
+  port: 9000
+  domain: ""  # set to enable virtual-hosted style URLs (e.g. "localhost", "s3.example.com")
+  shutdown_timeout_secs: 30
+  # Serve the dashboard (Web UI) + its API on a SEPARATE port from the S3 API, so
+  # each can have its own firewall rules / TLS / reverse proxy (MinIO-style). 0 =
+  # everything on `port`. (env: VAULTS3_CONSOLE_PORT / VAULTS3_CONSOLE_ADDRESS)
+  console_address: ""  # empty = same as `address`
+  console_port: 0      # e.g. 9001 to put the dashboard on its own port
+  tls:
+    enabled: false
+    cert_file: ""
+    key_file: ""
+  internode_address: ""    # separate bind address for inter-node traffic (empty = disabled)
+  internode_port: 0        # separate port for inter-node traffic (0 = disabled)
+
+storage:
+  data_dir: "/var/db/vaults3"
+  metadata_dir: "/var/db/vaults3/metadata"
+
+auth:
+  admin_access_key: "vaults3-admin"
+  admin_secret_key: "vaults3-secret-change-me"
+
+encryption:
+  enabled: false
+  key: "" # hex-encoded 32-byte key (64 hex chars)
+  # Per-bucket encryption: with per_bucket true, `key` becomes the master KEK that
+  # wraps a distinct data key per bucket, and a bucket is encrypted only after it
+  # opts in (PUT /{bucket}?encryption). Different tenants get non-shared keys; opt-out
+  # buckets stay plaintext. See docs/design/per-bucket-encryption.md.
+  per_bucket: false
+  # legacy_key: previous server-wide key (hex), kept readable when switching to
+  # per_bucket. Optional.
+  legacy_key: ""
+
+# Transparent zstd compression on write / decompress on read (reads legacy gzip
+# objects too). Skips already-compressed file types (jpg, mp4, zip, ...).
+compression:
+  enabled: false
+
+# Small-file packing (EXPERIMENTAL): pack objects up to max_object_size into large
+# append-only volume files (as zstd frames) instead of one file each — avoids the
+# per-file overhead of millions of tiny objects. Does NOT compose with encryption
+# or erasure coding yet (it is skipped if either is enabled).
+packing:
+  enabled: false
+  max_object_size: 1048576       # 1 MiB — objects this size or smaller are packed
+  volume_max_size: 1073741824    # 1 GiB — roll to a new volume past this
+  compact_interval_hours: 24     # background dead-space reclamation; 0 = disabled
+  compact_min_dead_ratio: 0.5    # compact a volume once half of it is dead space
+
+logging:
+  enabled: false
+  file_path: "/var/log/vaults3.log"
+  level: "info"  # debug, info, warn, error
+
+lifecycle:
+  scan_interval_secs: 3600
+
+security:
+  ip_allowlist: []     # global CIDR allow list, empty = allow all
+  ip_blocklist: []     # global CIDR deny list
+  audit_retention_days: 90
+  sts_max_duration_secs: 43200  # max STS token duration (12 hours)
+
+notifications:
+  max_workers: 4       # webhook delivery goroutines
+  queue_size: 256      # buffered event queue size
+  timeout_secs: 10     # webhook HTTP timeout
+  max_retries: 3       # retry attempts for failed webhooks
+  kafka:
+    enabled: false
+    brokers: ["localhost:9092"]
+    topic: "vaults3-events"
+  nats:
+    enabled: false
+    url: "nats://localhost:4222"
+    subject: "vaults3.events"
+  redis:
+    enabled: false
+    addr: "localhost:6379"
+    channel: "vaults3-events"
+    list_key: ""        # set to use LPUSH queue mode instead of pub/sub
+  amqp:
+    enabled: false
+    url: "amqp://guest:guest@localhost:5672/"
+    exchange: "vaults3-events"
+    routing_key: "s3.events"
+  postgres:
+    enabled: false
+    connection_string: "postgres://user:pass@localhost:5432/vaults3?sslmode=disable"
+    table: "s3_events"
+  elasticsearch:
+    enabled: false
+    url: "http://localhost:9200"
+    index: "s3-events"
+
+replication:
+  # Enable only on the SOURCE for one-way "push". The TARGET does not need
+  # replication enabled — it just needs the peer's access_key/secret_key below to
+  # be valid IAM credentials on it. Writes via BOTH the S3 API and the web
+  # dashboard are replicated. For "active-active", enable on both sites.
+  enabled: false
+  mode: "push"             # "push" (one-way) or "active-active" (bidirectional)
+  site_id: "site-1"        # unique site ID for active-active mode
+  conflict_strategy: "last-writer-wins"  # "last-writer-wins", "largest-object", "site-preference"
+  preferred_site: ""       # for site-preference strategy
+  peers: []                # list of {name, url, access_key, secret_key}
+  scan_interval_secs: 30
+  max_retries: 5
+  batch_size: 100
+
+scanner:
+  enabled: false
+  webhook_url: "http://localhost:3310/scan"
+  timeout_secs: 30
+  quarantine_bucket: "vaults3-quarantine"
+  fail_closed: false
+  max_scan_size_bytes: 104857600  # 100MB
+  workers: 2
+
+tiering:
+  enabled: false
+  cold_data_dir: "/var/db/vaults3/cold_data"
+  migrate_after_days: 30
+  scan_interval_secs: 3600
+
+rate_limit:
+  enabled: false
+  requests_per_sec: 100   # per IP
+  burst_size: 200
+  per_key_rps: 50         # per access key
+  per_key_burst: 100
+
+backup:
+  enabled: false
+  targets: []              # list of {name, type, path}
+  schedule_cron: "0 2 * * *"  # daily at 2am
+  retention_days: 30
+  incremental: false
+
+oidc:
+  enabled: false
+  issuer_url: ""           # OIDC provider URL (e.g. "https://accounts.google.com")
+  client_id: ""            # OAuth2 client ID
+  allowed_domains: []      # restrict to email domains (empty = allow all)
+  role_mapping: {}         # map OIDC groups to VaultS3 policies
+  auto_create_users: true  # auto-create IAM user on first OIDC login
+  jwks_cache_secs: 3600    # JWKS key cache duration
+
+lambda:
+  enabled: false
+  max_response_size: 10485760  # 10MB max response from function
+  timeout_secs: 30
+  max_workers: 4
+  queue_size: 256
+
+memory:
+  max_search_entries: 50000    # max objects in search index (LRU eviction)
+  go_mem_limit_mb: 0           # Go runtime memory limit (0 = unlimited)
+
+# Vector / semantic search (optional add-on). Embeds object text via any
+# OpenAI-compatible /v1/embeddings endpoint (OpenAI, Ollama, llama.cpp, LM Studio,
+# vLLM, ...) and serves similarity search + RAG retrieval from POST /api/v1/vectors/query.
+vector:
+  enabled: false
+  embedding_url: "http://localhost:11434/v1/embeddings"  # e.g. Ollama
+  api_key: ""                  # leave empty for local servers
+  model: "nomic-embed-text"
+  dimensions: 0                # 0 = pin to the model's output on first vector
+  max_vectors: 100000          # cap on indexed vectors (FIFO eviction beyond)
+  auto_index: true             # embed text objects automatically on upload
+  index_prefixes: []           # if set, only auto-index keys under these prefixes
+  max_object_bytes: 1048576    # skip auto-indexing objects larger than this (1MB)
+  persist_path: "/var/db/vaults3/vectors.gob"  # survive restarts (embeddings are costly)
+  timeout_secs: 30
+
+# Auto-update (optional). Checks GitHub Releases daily and shows a dashboard
+# banner when a newer version exists. Self-update only ever swaps the binary —
+# object data, metadata, and config are never touched, and downloads are
+# checksum-verified. For Docker, leave `apply` off and use Watchtower instead.
+auto_update:
+  enabled: false               # run the daily check + dashboard notifier
+  apply: false                 # also download+install automatically (binary deploys only)
+  check_interval_hours: 24
+  allow_major: false           # never auto-cross a major version
+
+# Erasure coding (optional, works with or without clustering)
+erasure:
+  enabled: false
+  data_shards: 4
+  parity_shards: 2
+  block_size: 4194304          # 4MB, objects smaller than this bypass EC
+  data_dirs: []                # multiple disk paths for shard distribution
+  heal_interval_secs: 300      # seconds between heal scans
+
+# Distributed clustering (optional)
+cluster:
+  enabled: false
+  node_id: "node-1"
+  bind_addr: "0.0.0.0"
+  raft_port: 9001
+  api_port: 9000               # API port for this node
+  bootstrap: true              # true for the first node
+  peers: []                    # ["node-2@host2:9001", "node-3@host3:9001"]
+  peer_apis: {}                # nodeID → "host:apiPort" for proxying
+  placement:
+    replica_count: 3
+    read_quorum: 2
+    write_quorum: 2
+    virtual_nodes: 128
+  detector:
+    probe_interval_secs: 5
+    suspect_after: 3
+    down_after: 6
+    probe_timeout_secs: 3
+  rebalance:
+    max_bandwidth_mbps: 50
+    batch_size: 100
+
+# S3 Inventory reports (optional)
+# inventory:
+#   enabled: false
+#   dest_bucket: ""            # destination bucket for reports (empty = same bucket)
+#   schedule: "daily"          # "daily" or "weekly"
+#   include_versions: false
+
+# Auto-TLS (optional, alternative to manual TLS config)
+# auto_tls:
+#   enabled: false
+#   domains: []                # domains for Let's Encrypt certificates
+#   cache_dir: "autocert-cache"
+#   self_signed: false         # use self-signed cert (for development)
+
+debug: false                   # enable /debug/pprof/* endpoints
