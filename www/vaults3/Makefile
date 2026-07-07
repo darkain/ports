@@ -35,5 +35,6 @@ do-install:
 	    ${STAGEDIR}${SYSCONFDIR}/${PORTNAME}
 	${INSTALL_PROGRAM} ${WRKSRC}/vaults3 ${STAGEDIR}${PREFIX}/bin/vaults3
 	${INSTALL_PROGRAM} ${WRKSRC}/vaults3-cli ${STAGEDIR}${PREFIX}/bin/vaults3-cli
+	${INSTALL_DATA} ${WRKSRC}/configs/vaults3.yaml ${STAGEDIR}${PREFIX}/etc/vaults3.yaml.sample
 
 .include <bsd.port.mk>
