@@ -1,5 +1,5 @@
 PORTNAME=		vaults3
-PORTVERSION=	4.4.5
+PORTVERSION=	4.4.6
 CATEGORIES=		www
 
 MAINTAINER=	bsd-ports@darkain.com
