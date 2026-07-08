@@ -1,7 +1,6 @@
-PORTNAME=	vaults3
-PORTVERSION=	4.3.1
-PORTEPOCH=	1
-CATEGORIES=	www
+PORTNAME=		vaults3
+PORTVERSION=	4.4.5
+CATEGORIES=		www
 
 MAINTAINER=	bsd-ports@darkain.com
 COMMENT=	Lightweight S3-compatible object storage with built-in dashboard
