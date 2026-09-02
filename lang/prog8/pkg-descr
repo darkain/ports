@@ -1,0 +1,9 @@
+Structured Programming Language for 6502/65c02 (8-bit) and
+68000 (32-bit) microprocessors
+
+This is a structured programming language for the 8-bit 6502/6510/65c02
+microprocessor from the late 1970's and 1980's as used in many home computers
+from that era. It also supports the 32-bit Motorola 68000 CPU, for which the
+Commodore Amiga is the intended machine. It is a medium to low level programming
+language, which aims to provide many conveniences over raw assembly code (even
+when using a macro assembler).
