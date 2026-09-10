@@ -1,3 +1,3 @@
 #!/bin/sh
 
-"%%LOCALBASE%%/bin/java" -jar "%%JAVAJARDIR%%/prog8c-12.3.2-all.jar" "${@}"
+"%%LOCALBASE%%/bin/java" -jar "%%JAVAJARDIR%%/prog8c-12.3.3-all.jar" "${@}"
